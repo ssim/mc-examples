@@ -1,0 +1,92 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage[top=1cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage[pdfborder=0]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{15pt}
+
+\pagestyle{empty}
+
+\renewcommand{\baselinestretch}{1.15}
+\renewcommand{\labelenumi}{{\bf \arabic{enumi}.}}
+\newcommand{\abs}[1]{\ensuremath{\left \vert #1 \right \vert}}
+
+
+\begin{document}
+
+\hrule
+
+\begin{enumerate}
+\item \textbf{Escape Probability from a Homogeneous Slab}
+
+  Before turning to the problem of radiation escaping from a homogeneous sphere,
+  as described in the handout, we consider an infinitely extended slab with
+  constant emissivity and absorption opacity. Again, we aim at determining the
+  probability for photons to escape from this object by using a Monte Carlo
+  approach. The same basic principles as discussed in the handout apply here,
+  but a simpler geometrical configuration is encountered.
+
+  We approach the problem in the following way:
+  \begin{itemize}
+    \item we assume that the slab extents indefinitely along the $y$ and $z$
+      directions. Along the $x$-axis, it reaches from $0$ to $L$.
+    \item in this plane-parallel situation, we only have to account for the
+      $x$-dependence of all quantities. Directions relative to this symmetry
+      axis are measured by the angle $\theta$. Instead of using this angle
+      directly, however, it is commonly more convenient to work with its
+      cosine $\mu = \cos \theta$ in radiative transfer applications.
+    \item a large number of Monte Carlo ``packets'' (i.e.\ photons) representing
+      the radiation field is introduced. They are uniformly distributed within
+      the slab of width $L$. 
+    \item since the radiation field is isotropic, the initial directions of the
+      photons follow from the probability distribution $\rho(\mu) =
+      \frac{1}{2}$
+    \item the Monte Carlo packets will undergo an interaction with the
+      probability $\rho(\tau) = \exp(-\tau)$. Here, the optical depth is
+      introduced which is the product of the absorption opacity $\chi$ and the
+      pathlength the packet/photon covers: $\tau = \chi s$\footnote{This
+        relation is only valid as long as the opacity is constant. Otherwise an
+      integral over the pathlength has to be used.}. Note that $s$
+      refers to the actual distance packets/photons travel, not just its
+      projection onto the symmetry axis.
+    \item for each Monte Carlo packet, the distance $d$ to the surface of the
+      slab has to be determined. Note that in the plane-parallel case, packets
+      may escape from either side of the slab. This distance has to be converted
+      into an optical depth, $\tau_{\mathrm{edge}}$.
+    \item finally, the number of escaping packets may be calculated: packets
+      which fulfil $\tau > \tau_{\mathrm{edge}}$ reach the surface of the slab
+      before interacting and escape.
+  \end{itemize}
+  \pagebreak
+
+  Following this basic outline, your tasks include:
+  \begin{enumerate}
+    \item calculate the escape probability slabs of different optical thickness,
+      i.e.\ for different values of $\tau_{\mathrm{sl}} = \chi L$, using a reasonable number of
+      Monte Carlo packets.
+    \item estimate the error of your Monte Carlo results. Use the basic property
+      of Monte Carlo techniques here, namely that their accuracy increases with
+      $N^{-1/2}$.
+    \item compare your results with the analytic solution
+      $P_{\mathrm{esc}}(\tau_{\mathrm{sl}})$:
+      \begin{equation}
+      P_{\mathrm{esc}}(\tau) = \frac{1}{2 \tau} \left[ 1 +
+        \exp(-\tau) \left(\tau - 1 + \tau^2 \exp(\tau) \mathrm{Ei}(-\tau) \right)
+      \right] 
+      \end{equation}
+      Do your results agree within their respective uncertainties?
+  \end{enumerate}
+
+  \textit{Note:} In the analytic solution the so-called ``exponential integral''
+  appears:
+  \begin{equation*}
+    \mathrm{Ei}(x) = \int_{-\infty}^x \mathrm{d}t \frac{\exp{t}}{t}
+  \end{equation*}
+  Have a look at \texttt{scipy.special.expi} if you want to use this expression
+  within your \textsc{Python} program. 
+\end{enumerate}
+
+\end{document}
