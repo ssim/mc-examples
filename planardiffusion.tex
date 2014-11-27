@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{siunitx}
+\usepackage[top=1cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage[pdfborder=0]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{15pt}
+
+\pagestyle{empty}
+
+\renewcommand{\baselinestretch}{1.15}
+\renewcommand{\labelenumi}{{\bf \arabic{enumi}.}}
+\newcommand{\abs}[1]{\ensuremath{\left \vert #1 \right \vert}}
+
+\input{journals.tex}
+
+
+\begin{document}
+
+\hrule
+
+\textbf{Diffusion in a homogeneous, plane-parallel medium}
+
+  The goal of this exercise is to determine the dispersion of a sharply peaked
+  pulse of radiative energy with Monte Carlo techniques\footnote{See
+    \citet{Noebauer2012} and \citet{Abdikamalov2012} for more details on this
+  problem.}.  In particular, we consider a pulse of radiation with energy
+  $\mathcal{E}_{\mathrm{tot}}$, which follows a $\delta$ distribution. It
+  resides in a plane-parallel box, extending form $-L/2$ to $L/2$. The grey
+  scattering opacity $\chi$ is constant and chosen such that the total optical
+  depth along the symmetry axis amounts to $\tau_{\mathrm{tot}} = 10^2$. Thus,
+  the optical depth of the considered system is high enough for the diffusion
+  approximation to be applicable and the analytic solution for the evolution of
+  the pulse is given by
+  \begin{equation}
+    E(x,t) = \mathcal{E}_{\mathrm{tot}} \frac{1}{\sqrt{4\pi D t}} \exp\left( -\frac{x^2}{4
+    D t},
+    \right)
+    \label{eq:solution}
+  \end{equation}
+  with the diffusion constant\footnote{Here, $c$ denotes the speed of
+  light.} 
+  \begin{equation}
+    D = \frac{c}{3 \chi}.
+    \label{eq:diffusion_constant}
+  \end{equation}
+  Note the difference between energy $\mathcal{E}$ and energy density $E$:
+  $[\mathcal{E}] = \mathrm{erg}$, $[E] = \mathrm{erg\,cm^{-1}}$.
+
+  \begin{enumerate}
+    \item Write a program to determine the evolution of the energy pulse with
+      Monte Carlo techniques. Use the parameters $\mathcal{E}_{\mathrm{tot}} =
+      \SI[retain-unity-mantissa=false]{1e8}{erg}$, $\chi =
+      \SI[retain-unity-mantissa=false]{1e2}{cm^{-1}}$ and $L
+      = \SI{1}{cm}$
+    \item Compare the Monte Carlo results with the analytic solution
+      (\ref{eq:solution}) at $t = 5
+      \times 10^{-12}$, $10^{-11}$, $2 \times 10^{-11}$ and $5 \times 10^{-11} \,
+      \mathrm{s}$:
+  \end{enumerate}
+
+  The following hints may help you:
+  \begin{itemize}
+    \item distribute the initial radiation energy evenly onto the Monte
+      Carlo packets
+    \item initialise all packets with isotropic directions at $x = 0$
+    \item distances to the next interaction location follow as usual from
+      $\rho(l) = \chi \exp(-\chi l)$
+    \item assume that all interactions occur as resonant scatterings, i.e.\ the
+      packet energy remains constant and the emergent directions are isotropic
+    \item in order to determine the distribution of radiative energy at time
+      $t$, you have to track the total pathlength $l_{\mathrm{tot}}$ packets cover
+    \item you follow the propagation of a particular packet until
+      $l_{\mathrm{tot}}$ is equal to the maximum length packets can travel, $c
+      \Delta t$
+    \item the extent of the box and the time snapshots have been chosen such
+      that you don't have to worry about packets crossing the ``boundaries'' of
+      the box
+    \item to illustrate the radiation field energy density at time $t$, make a
+      histogram of the packet location and multiply it with the packet energy.
+      If you use \texttt{python} and \texttt{matplotlib}, have a look at the
+      routine \texttt{matplotlib.pylab.hist} and in particular at its keyword
+      argument \texttt{weights}.
+    \item your solution should looks similar to Figure \ref{fig:sol}
+  \end{itemize}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{diffusion_results}
+    \caption{Comparison between the Monte Carlo simulation results and the
+      analytic solution (\ref{eq:solution}) for the requested snapshots ($10^4$
+    packets were used).}
+    \label{fig:sol}
+  \end{figure}
+
+\bibliography{astrouli.bib}
+\bibliographystyle{aa}
+
+
+  
+\end{document}

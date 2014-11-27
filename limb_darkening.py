@@ -45,6 +45,13 @@ class mc_packet(object):
             if self.check_for_escape():
                 return True
             self.scatter_packet()
+            ## if self.check_for_escape():
+            ##     return True
+            ## if self.check_for_backscatter():
+            ##     self.tau = self.tau_low
+            ##     self.mu = -self.mu
+            ## else:
+            ##     self.scatter_packet()
             self.draw_new_tau()
 
 
@@ -55,6 +62,7 @@ def run_simulation(Npackets, tau_min = 10):
     dmu = mu_bins[1] - mu_bins[0]
 
     for i in xrange(Npackets):
+        print(i)
 
         packet = mc_packet(tau_min)
         if packet.propagate_packet_until_escape():
@@ -67,6 +75,9 @@ def run_simulation(Npackets, tau_min = 10):
 
 
 
+    plt.hist(mu_esc, bins = mu_bins,  normed = True, label = "Monte Carlo results")
+
+    plt.figure()
     plt.hist(mu_esc, bins = mu_bins,  weights = 1. / mu_mid, normed = True, label = "Monte Carlo results")
     plt.plot(mu_bins, 1. / 0.7 * (0.4 + 0.6 * mu_bins), label = "expectation", color = "red", lw = 2)
     plt.xlabel(r"$\mu$")
