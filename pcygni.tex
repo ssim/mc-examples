@@ -1,0 +1,78 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[top=1cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage[pdfborder=0]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{15pt}
+
+\pagestyle{empty}
+
+\renewcommand{\baselinestretch}{1.15}
+\renewcommand{\labelenumi}{{\bf \arabic{enumi}.}}
+\newcommand{\abs}[1]{\ensuremath{\left \vert #1 \right \vert}}
+
+
+\begin{document}
+
+\hrule
+
+\begin{enumerate}
+\item \textbf{Sobolev Approximation and P-Cygni Line Profiles}
+
+  In this exercise, the Sobolev Approximation is used to calculate a P-Cygni
+  within a Monte Carlo radiative transfer simulation. For this purpose, we
+  consider a shell in homologous expansion which is illuminated by a radiative
+  source at its lower boundary. Within the expanding material, photons may
+  perform resonant line-interactions with one atomic transition only. The
+  emergent radiation field is recorded and thus line profile, shaped by the
+  interactions within the shell, calculated. Your task is to write a simple
+  Monte Carlo program, which solves the propagation of the radiation field. Use
+  the Sobolev approximation to treat the line interactions and thus determine
+  the P-Cygni line profile in the emergent spectrum. For this problem you may
+  adopt the following assumptions:
+
+  \begin{itemize}
+    \item the shell extends from $R_{\mathrm{min}} = \SI{1e11}{cm}$ to
+      $R_{\mathrm{max}} = \SI{1e13}{cm}$. In velocity space, it covers the
+      linear range from $0.0001\,c$ to $0.01 \,c$. 
+    \item the shell is entirely composed of hydrogen and the only allowed atomic
+      transition is the Lyman-$\alpha$ line at the rest frame wavelength of
+      $1215.6\,\mathrm{\AA}$
+    \item the material within the shell has constant density and temperature.
+      These material properties are such that the Sobolev optical depth of the
+      relevant transition amounts to $\tau_{\mathrm{sob}} = 0.1$
+    \item at the lower boundary, an isotropic radiative source is located, which
+      emits uniformly within the wavelength range $\lambda_{\mathrm{min}} = 1100
+      \, \mathrm{\AA}$ and $\lambda_{\mathrm{max}} = 1300 \, \mathrm{\AA}$
+  \end{itemize}
+
+  In developing the Monte Carlo routine you may adhere to the following
+  strategy:
+  \begin{enumerate}
+    \item initialise the Monte Carlo packets at the lower boundary. Assign an
+      initial frequency and direction (assuming no limb darkening, i.e.\ $N(\mu)
+      \mathrm{d} \mu \propto \mu \mathrm{d}\mu$)
+    \item packets may only interact at the Sobolev point, i.e.\ at the location
+      where their CMF frequency is equal to the rest-frame frequency of the line
+      transition. Determine this point using the Doppler effect formula, $\nu_0 =
+      \gamma \nu (1 - \beta \mu)$\footnote{For the problem at hand, where $v \ll
+      c$, you may set $\gamma = 1$.}
+    \item at the Sobolev point, packets interact if $\tau >
+      \tau_{\mathrm{sob}}$. The optical depth of the packet is determined in the
+      usual way, i.e.\ by $\tau = - \ln z$
+    \item if a line interaction occurs, change the packet properties by assuming
+      isotropy of the resonant scatterings and by according for 
+      energy conservation in the CMF 
+    \item follow the propagation of each packet in the described fashion until
+      it leaves through either of the two boundaries. Discard the packet if it
+      intersects the lower boundary, but record its LF frequency if it emerges
+      through the outer boundary
+    \item construct a spectrum from the recorded frequencies
+  \end{enumerate}
+
+\end{enumerate}
+\end{document}
