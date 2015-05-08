@@ -2,11 +2,15 @@
 from __future__ import print_function
 import numpy as np
 import matplotlib.pyplot as plt
+import pcygni_profile as pcyg
 
 c = 2.9979e10
+np.random.seed(0)
 
 class mc_packet(object):
     def __init__(self, Rmin, Rmax, nu_min, nu_max, nu_line, tau_sob, t, verbose = False):
+        self.nu_max = nu_max
+        self.nu_min = nu_min
         self.verbose = verbose
         self.Rmin = Rmin
         self.Rmax = Rmax
@@ -71,7 +75,9 @@ class mc_packet(object):
     def propagate(self):
 
         while True:
-            if self.lbound < self.lsob:
+            if self.verbose:
+                print("r = %e; mu = %e; lbound = %e; lsob = %e" % (self.r, self.mu, self.lbound, self.lsob))
+            if self.lbound < self.lsob or self.lsob < 0:
                 if self.verbose:
                     print("Reaching boundary")
                 if self.boundint == "left":
@@ -92,7 +98,10 @@ class mc_packet(object):
                     if self.verbose:
                         print("Line Interaction")
                     self.perform_interaction()
-
+                else:
+                    if self.verbose:
+                        print("No Line Interaction")
+                    self.nu_line = self.nu_max * 1.1
 
             self.draw_new_tau()
             self.check_for_boundary_intersection()
@@ -131,9 +140,9 @@ class homologous_sphere(object):
 def main():
 
     lam_line = 1215.6 * 1e-8
-    lam_min = 1000.0 * 1e-8
-    lam_max = 1400.0 * 1e-8
-    tau_sob = 0.1
+    lam_min = 1100.0 * 1e-8
+    lam_max = 1300.0 * 1e-8
+    tau_sob = 10
 
     t = 13.5 * 86400.
 
@@ -148,16 +157,27 @@ def main():
     nu_line = c / lam_line
 
     npack = 10
+    npack = 100000
+    nbins = 200
+    npoints = 500
     verbose = True
+    verbose = False
 
     sphere = homologous_sphere(Rmin, Rmax, nu_min, nu_max, nu_line, tau_sob, t, npack,  verbose = verbose)
     sphere.perform_simulation()
 
+    solver = pcyg.homologous_sphere(rmin = Rmin, rmax = Rmax, vmax = vmax, Ip = 1, tauref = 10, vref = 1e8, ve = 1e40, lam0 = lam_line)
+    solution = solver.save_line_profile(nu_min, nu_max, vs_nu = True, npoints = npoints)
+
     print(sphere.emergent_nu)
+    plt.plot(solution[0], solution[1] / solution[1,0])
+    plt.hist(sphere.emergent_nu, bins = np.linspace(nu_min, nu_max, nbins), histtype = "step", weights = np.ones(len(sphere.emergent_nu)) * float(nbins) / float(npack))
+
 
 if __name__ == "__main__":
 
     main()
+    plt.show()
 
 
 
