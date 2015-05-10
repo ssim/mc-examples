@@ -3,6 +3,14 @@ from __future__ import print_function
 import numpy as np
 import matplotlib.pyplot as plt
 import pcygni_profile as pcyg
+import colors as mycols
+
+props = mycols.loadDefaultPlotParams(journal="mnras")
+
+c1 = plt.rcParams["axes.color_cycle"][0]
+c2 = plt.rcParams["axes.color_cycle"][1]
+c3 = plt.rcParams["axes.color_cycle"][2]
+c4 = plt.rcParams["axes.color_cycle"][3]
 
 c = 2.9979e10
 np.random.seed(0)
@@ -156,11 +164,9 @@ def main():
     nu_max = c / lam_min
     nu_line = c / lam_line
 
-    npack = 10
     npack = 100000
     nbins = 200
     npoints = 500
-    verbose = True
     verbose = False
 
     sphere = homologous_sphere(Rmin, Rmax, nu_min, nu_max, nu_line, tau_sob, t, npack,  verbose = verbose)
@@ -169,10 +175,19 @@ def main():
     solver = pcyg.homologous_sphere(rmin = Rmin, rmax = Rmax, vmax = vmax, Ip = 1, tauref = 10, vref = 1e8, ve = 1e40, lam0 = lam_line)
     solution = solver.save_line_profile(nu_min, nu_max, vs_nu = True, npoints = npoints)
 
-    print(sphere.emergent_nu)
-    plt.plot(solution[0], solution[1] / solution[1,0])
-    plt.hist(sphere.emergent_nu, bins = np.linspace(nu_min, nu_max, nbins), histtype = "step", weights = np.ones(len(sphere.emergent_nu)) * float(nbins) / float(npack))
+    fig = plt.figure(figsize = (props["pagewidth"], 1.5 * props["columnwidth"]))
+    ax = fig.add_subplot(111)
+    ax.plot(solution[0] * 1e-15, solution[1] / solution[1,0], label = r"prediction", color = c2)
+    ax.hist(sphere.emergent_nu * 1e-15, bins = np.linspace(nu_min, nu_max, nbins) * 1e-15, histtype = "step", weights = np.ones(len(sphere.emergent_nu)) * float(nbins) / float(npack), label = "Monte Carlo", color = c3)
 
+    ax.set_xlabel(r"$\nu$ [$10^{15} \, \mathrm{Hz}$]")
+    ax.set_xlim([nu_min * 1e-15, nu_max * 1e-15])
+    pax = ax.twiny()
+    pax.set_xlabel(r"$\lambda$ [\AA]")
+    pax.set_xlim([1.e8 * lam_min, 1e8 * lam_max])
+    ax.set_ylabel(r"$F_{\nu}/F_{\nu}^{\mathrm{cont}}$")
+    ax.legend()
+    plt.savefig("line_profile.pdf")
 
 if __name__ == "__main__":
 

@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
+\usepackage{natbib}
 \usepackage{siunitx}
 \usepackage[top=1cm,left=2.5cm,right=2.5cm]{geometry}
 \usepackage[pdfborder=0]{hyperref}
@@ -15,6 +16,7 @@
 \renewcommand{\labelenumi}{{\bf \arabic{enumi}.}}
 \newcommand{\abs}[1]{\ensuremath{\left \vert #1 \right \vert}}
 
+\input{journals.tex}
 
 \begin{document}
 
@@ -44,7 +46,7 @@
       $1215.6\,\mathrm{\AA}$
     \item the material within the shell has constant density and temperature.
       These material properties are such that the Sobolev optical depth of the
-      relevant transition amounts to $\tau_{\mathrm{sob}} = 0.1$
+      relevant transition amounts to $\tau_{\mathrm{sob}} = 10$
     \item at the lower boundary, an isotropic radiative source is located, which
       emits uniformly within the wavelength range $\lambda_{\mathrm{min}} = 1100
       \, \mathrm{\AA}$ and $\lambda_{\mathrm{max}} = 1300 \, \mathrm{\AA}$
@@ -75,9 +77,26 @@
 
     \item compare your obtained spectrum with the analytic solution according to
       \citet{Jeffery1990}. For this purpose, you may use the python script,
-      \texttt{pcygni_profile.py}. Change the example to match the setup at hand.
-      Use \texttt{} and \texttt{} to enforce a uniform Sobolev optical depth in
-      the analytic calculation. To  
+      \texttt{pcygni\_profile.py}. Change the example to match the setup at hand.
+      Use a large value for \texttt{ve} (e.g.\ $v_e = 10^{40}$) to enforce a uniform
+      Sobolev optical depth throughout the ejecta in
+      the analytic calculation. To simplify the comparison, normalize both the
+      results of both calculations to the continuum level, i.e.\ to
+      $F_{\nu}$ at $\nu \ll \nu_{\mathrm{line}}$ or at $\nu \gg
+      \nu_{\mathrm{line}}$. Following these steps, you should obtain a
+      comparison similar to Figure \ref{fig:profile}.
   \end{enumerate}
 \end{enumerate}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{line_profile}
+    \caption{P-Cygni Line profile as predicted by \citet{Jeffrey1990} and
+    calculated by the Monte Carlo simulation with $10^5$ packets.}
+    \label{fig:profile}
+  \end{figure}
+
+\bibliography{astrouli.bib}
+\bibliographystyle{aa}
+
 \end{document}
